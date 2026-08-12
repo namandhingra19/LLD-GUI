@@ -5,6 +5,7 @@ import parking.src.model.ExitGate.ExitGate;
 import parking.src.model.ParkingSpot.ParkingSpot;
 import parking.src.enums.VehicleType;
 import parking.src.model.ParkingSpotManager.ParkingSpotManager;
+import parking.src.model.Ticket.Ticket;
 import parking.src.services.ParkingSpaceService;
 import parking.src.factory.ParkingSpotFactory;
 
@@ -26,6 +27,7 @@ public class ParkingLotUIController {
 
     private EntranceGate entranceGate;
     private ExitGate exitGate;
+
 
 
     public ParkingLotUIController() {
@@ -117,6 +119,26 @@ public class ParkingLotUIController {
         }
 
         entranceGate.parkVehicle(vehicleType, vehicleNumber);
+    }
+
+    public double computeCost(
+        int ticketId
+    ){
+        if(exitGate == null){
+            throw new IllegalStateException("No exit gate available");
+        }
+
+        return exitGate.computeCost(ticketId);
+    }
+    
+    public void unparkVehicle(
+        int ticketId
+    ){
+        if(exitGate == null){
+            throw new IllegalStateException("No exit gate available");
+        }
+
+        exitGate.unparkVehicle(ticketId);
     }
 
 }

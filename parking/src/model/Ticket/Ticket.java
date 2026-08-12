@@ -20,4 +20,18 @@ public class Ticket {
     public int getTicketNo() {
         return ticketNo;
     }
+
+    public long getEntryTime() {
+        return entryTime;
+    }
+
+    public ParkingSpot getParkingSpot() {
+        return parkingSpot;
+    }
+
+    public Vehicle getVehicle() {
+        return vehicle;
+    }
+
+    
 }

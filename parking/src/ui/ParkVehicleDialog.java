@@ -115,21 +115,28 @@ public class ParkVehicleDialog extends JDialog {
         String selectedType =
                 (String) vehicleTypeComboBox
                         .getSelectedItem();
-        
-        JOptionPane.showMessageDialog(
-                this,
-                "Calling EntranceGate...\n\n" +
-                "Vehicle: " + vehicleNumber +
-                "\nType: " + selectedType
-        );
 
-        controller.parkVehicle(
-                VehicleType.valueOf(selectedType),
-                vehicleNumber
-        );
+        try {
 
-        if (refreshSpots != null) {
-            refreshSpots.run();
+            controller.parkVehicle(
+                    VehicleType.valueOf(selectedType),
+                    vehicleNumber
+            );
+
+            if (refreshSpots != null) {
+                refreshSpots.run();
+            }
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Vehicle parked successfully"
+            );
+
+            dispose();
+
+        } catch (Exception ex) {
+
+            showError(ex.getMessage());
         }
 
         /*
@@ -142,5 +149,17 @@ public class ParkVehicleDialog extends JDialog {
          *
          * Then show confirmation dialog.
          */
+    }
+
+    private void showError(
+            String message
+    ) {
+
+        JOptionPane.showMessageDialog(
+                this,
+                message,
+                "Error",
+                JOptionPane.ERROR_MESSAGE
+        );
     }
 }

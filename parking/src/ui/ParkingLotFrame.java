@@ -493,7 +493,10 @@ boundaryPanel
     private void openExitDialog() {
 
         ExitVehicleDialog dialog =
-                new ExitVehicleDialog(this);
+                new ExitVehicleDialog(
+                        this,
+                        this::refreshParkingStatus
+                );
 
         dialog.setVisible(true);
     }

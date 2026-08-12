@@ -172,16 +172,20 @@ public class ParkingManagerPanel extends JPanel {
     ) {
 
         JPanel card = new JPanel(
-                new GridLayout(3, 1)
+                new GridLayout(4, 1)
         );
 
         card.setPreferredSize(
-                new Dimension(120, 85)
+                new Dimension(150, 110)
+        );
+
+        card.setBackground(
+                getCardBackground(spot)
         );
 
         card.setBorder(
                 BorderFactory.createLineBorder(
-                        Color.GRAY
+                        getCardBorderColor(spot)
                 )
         );
 
@@ -204,11 +208,36 @@ public class ParkingManagerPanel extends JPanel {
                 SwingConstants.CENTER
         );
 
+        JLabel vehicleLabel = new JLabel(
+                getVehicleText(spot),
+                SwingConstants.CENTER
+        );
+
+        vehicleLabel.setToolTipText(
+                getVehicleText(spot)
+        );
+
         idLabel.setFont(
                 new Font(
                         "Arial",
                         Font.BOLD,
                         14
+                )
+        );
+
+        statusLabel.setFont(
+                new Font(
+                        "Arial",
+                        Font.BOLD,
+                        12
+                )
+        );
+
+        vehicleLabel.setFont(
+                new Font(
+                        "Arial",
+                        Font.BOLD,
+                        12
                 )
         );
 
@@ -220,6 +249,7 @@ public class ParkingManagerPanel extends JPanel {
         card.add(idLabel);
         card.add(statusLabel);
         card.add(ticketLabel);
+        card.add(vehicleLabel);
 
         spotsPanel.add(card);
     }
@@ -238,6 +268,38 @@ public class ParkingManagerPanel extends JPanel {
                 + spot.getTicket().getTicketNo();
     }
 
+    private String getVehicleText(
+            ParkingSpot spot
+    ) {
+
+        if (!spot.isOccupied()
+                || spot.getTicket() == null
+                || spot.getTicket().getVehicle() == null) {
+
+            return "Vehicle: -";
+        }
+
+        return getVehicleIcon(spot)
+                + spot.getTicket()
+                        .getVehicle()
+                        .getVehicleNo();
+    }
+
+    private String getVehicleIcon(
+            ParkingSpot spot
+    ) {
+
+        if (spot.getTicket()
+                .getVehicle()
+                .getVehicleType()
+                == VehicleType.TWO_WHEELER) {
+
+            return "\uD83C\uDFCD\uFE0F ";
+        }
+
+        return "\uD83D\uDE97 ";
+    }
+
     private void updateStatusColor(
             JLabel label,
             ParkingSpot spot
@@ -253,5 +315,29 @@ public class ParkingManagerPanel extends JPanel {
                     new Color(0, 140, 0)
             );
         }
+    }
+
+    private Color getCardBackground(
+            ParkingSpot spot
+    ) {
+
+        if (spot.isOccupied()) {
+
+            return new Color(255, 235, 235);
+        }
+
+        return new Color(235, 255, 235);
+    }
+
+    private Color getCardBorderColor(
+            ParkingSpot spot
+    ) {
+
+        if (spot.isOccupied()) {
+
+            return Color.RED;
+        }
+
+        return new Color(0, 140, 0);
     }
 }

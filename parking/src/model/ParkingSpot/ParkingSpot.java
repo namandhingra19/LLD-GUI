@@ -37,4 +37,7 @@ public class ParkingSpot {
         return ticket;
     }
 
+    public int getPrice() {
+        return price;
+    }
 }

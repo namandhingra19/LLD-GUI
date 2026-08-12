@@ -14,11 +14,9 @@ import java.util.List;
 public class EntranceGate {
 
     private ParkingSpaceService parkingSpaceService;
-    private List<Ticket> tickets;
 
-    public EntranceGate(ParkingSpaceService parkingSpaceService){
+    public EntranceGate(ParkingSpaceService parkingSpaceService) {
         this.parkingSpaceService = parkingSpaceService;
-        this.tickets = new ArrayList<>();
     }
 
     private ParkingSpot findParkingSpace(VehicleType vehicleType){
@@ -34,8 +32,8 @@ public class EntranceGate {
     }
 
     private Ticket generateTicket(Vehicle vehicle, ParkingSpot parkingSpot){
-        Ticket ticket = new Ticket(tickets.size(),System.currentTimeMillis(),parkingSpot,vehicle);
-        this.tickets.add(ticket);
+        Ticket ticket = new Ticket(this.parkingSpaceService.getTickets().size() + 1,System.currentTimeMillis(),parkingSpot,vehicle);
+        this.parkingSpaceService.addTicket(ticket);
         return ticket;
     }
 

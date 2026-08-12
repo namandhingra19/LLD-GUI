@@ -2,6 +2,9 @@
 package parking.src.ui;
 
 import javax.swing.*;
+
+import parking.src.controller.ParkingLotUIController;
+
 import java.awt.*;
 
 public class ExitVehicleDialog extends JDialog {
@@ -9,13 +12,24 @@ public class ExitVehicleDialog extends JDialog {
     private JTextField ticketIdField;
 
     private JComboBox<String> paymentMethodComboBox;
+    private final ParkingLotUIController controller = ParkingLotUIController.getInstance();
+    private final Runnable refreshSpots;
 
     public ExitVehicleDialog(JFrame parent) {
 
-        super(parent, "Exit Vehicle", true);
+        this(parent, null);
+    }
 
+    public ExitVehicleDialog(
+            JFrame parent,
+            Runnable refreshSpots
+    ) {
+
+        super(parent, "Exit Vehicle", true);
+        this.refreshSpots = refreshSpots;
         setSize(500, 350);
         setLocationRelativeTo(parent);
+        
 
         initializeUI();
     }
@@ -109,6 +123,22 @@ public class ExitVehicleDialog extends JDialog {
             return;
         }
 
+        try {
+
+            double cost =
+                    controller.computeCost(
+                            parseTicketId(ticketId)
+                    );
+
+            JOptionPane.showMessageDialog(
+                        this,
+                        "Cost for ticket ID " + ticketId + ": " + cost
+                );
+
+        } catch (Exception ex) {
+
+            showError(ex.getMessage());
+        }
         /*
          * Your LLD:
          *
@@ -122,14 +152,23 @@ public class ExitVehicleDialog extends JDialog {
          *      computation.price(ticket);
          */
 
-        JOptionPane.showMessageDialog(
-                this,
-                "Cost computation called for:\n"
-                        + ticketId
-        );
+        
     }
 
     private void makePayment() {
+
+        String ticketId =
+                ticketIdField.getText().trim();
+
+        if (ticketId.isEmpty()) {
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Please enter ticket ID"
+            );
+
+            return;
+        }
 
         String paymentMethod =
                 (String) paymentMethodComboBox
@@ -147,12 +186,55 @@ public class ExitVehicleDialog extends JDialog {
          * exitGate.removeVehicle(ticket);
          */
 
+        try {
+
+            controller.unparkVehicle(
+                    parseTicketId(ticketId)
+            );
+
+            if (refreshSpots != null) {
+                refreshSpots.run();
+            }
+        
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Payment successful using "
+                            + paymentMethod
+            );
+
+            dispose();
+
+        } catch (Exception ex) {
+
+            showError(ex.getMessage());
+        }
+    }
+
+    private int parseTicketId(
+            String ticketId
+    ) {
+
+        try {
+
+            return Integer.parseInt(ticketId);
+
+        } catch (NumberFormatException ex) {
+
+            throw new IllegalArgumentException(
+                    "Ticket ID must be a number"
+            );
+        }
+    }
+
+    private void showError(
+            String message
+    ) {
+
         JOptionPane.showMessageDialog(
                 this,
-                "Payment successful using "
-                        + paymentMethod
+                message,
+                "Error",
+                JOptionPane.ERROR_MESSAGE
         );
-
-        dispose();
     }
 }
